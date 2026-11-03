@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light only">
-<title>출하사진 촬영</title>
+<title>AZ 사전검사 사진 촬영</title>
 <style>
 *{box-sizing:border-box}
 :root{color-scheme:light;--mw:28rem;--ink:#3b4854;--brand:#00ab6b;--bg:#eef1f3;--card:#fff;--line:#cbd5e1;--mute:#64748b;--soft:#f1f5f9;--danger:#dc2626}
@@ -21,6 +21,7 @@ header{background:var(--card);border-bottom:4px solid var(--brand);position:stic
 main{max-width:var(--mw);margin:0 auto;padding:.75rem 1rem 1.5rem}
 .card{background:var(--card);border-radius:1rem;padding:1rem;box-shadow:0 1px 2px rgba(0,0,0,.06);margin-bottom:.7rem}
 h1{font-size:1.5rem;font-weight:800;margin:0 0 .25rem}
+.ttl{text-align:center;margin:.3rem 0 .8rem;font-size:1.45rem}
 .sub{font-size:.95rem;color:var(--mute);margin:0 0 .8rem}
 .lb{font-size:.95rem;font-weight:700;margin:0 0 .4rem;display:block}
 .in{width:100%;height:3.2rem;padding:0 .75rem;font-size:1.15rem;border-radius:.75rem;border:2px solid var(--line);background:var(--card);color:var(--ink);outline:none}
@@ -162,7 +163,8 @@ function render(){
 /* ---------- 촬영 화면 ---------- */
 function renderWork(){
   const n=S.items.length,editing=S.edit>=0,full=!editing&&n>=MAXN,idx=editing?S.edit+1:n+1;
-  $('app').innerHTML=`<section class="card">
+  $('app').innerHTML=`<h1 class="ttl">AZ 사전검사 사진 촬영</h1>
+  <section class="card">
     <label class="lb" for="insp">확인자 이름</label>
     <input id="insp" class="in" type="text" autocomplete="name" placeholder="예: 홍길동" value="${esc(S.inspector)}" oninput="S.inspector=this.value;safeSet(NAME_KEY,this.value);save()">
   </section>
@@ -292,7 +294,7 @@ function stylesXml(){
 function sheetXml(){
   const R={},ht={1:36,2:22,3:48},add=(r,x)=>{R[r]=(R[r]||'')+x},LC=colL(NP);
   const empt=(r,s)=>Array.from({length:NP},(_,i)=>`<c r="${colL(i+1)}${r}" s="${s}"/>`).join('');
-  add(1,cell('A1',2,'SLE 칠북 공장 - 출하사진')+empt(1,2));
+  add(1,cell('A1',2,'AZ 사전검사 사진')+empt(1,2));
   add(2,cell('A2',4,'확인자 : '+S.inspector.trim()+'      저장일시 : '+S.endTxt)+empt(2,4));
   add(3,cell('A3',1,'S/N')+LABELS.map((nm,i)=>cell(colL(i+1)+'3',1,(i+1)+'. '+nm)).join(''));
   S.items.forEach((it,i)=>{const r=FIRST+i;ht[r]=ROWPT;add(r,cell('A'+r,3,it.pfx+it.rest)+empt(r,3))});
@@ -314,7 +316,7 @@ function buildXlsxBlob(){
   const files=[
     {name:'[Content_Types].xml',text:H+`<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/xl/workbook.xml" ContentType="${SM}.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="${SM}.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="${SM}.styles+xml"/><Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/></Types>`},
     {name:'_rels/.rels',text:H+`<Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
-    {name:'xl/workbook.xml',text:H+`<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="${R}"><sheets><sheet name="출하사진" sheetId="1" r:id="rId1"/></sheets></workbook>`},
+    {name:'xl/workbook.xml',text:H+`<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="${R}"><sheets><sheet name="AZ 사전검사" sheetId="1" r:id="rId1"/></sheets></workbook>`},
     {name:'xl/_rels/workbook.xml.rels',text:H+`<Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/styles" Target="styles.xml"/></Relationships>`},
     {name:'xl/styles.xml',text:stylesXml()},
     {name:'xl/worksheets/sheet1.xml',text:sheetXml()},
@@ -329,7 +331,7 @@ function downloadXlsx(){
   if(!S.items.length)return;
   if(!S.inspector.trim()){tell('확인자 이름을 입력해 주세요.');return}
   const d=new Date();S.endTxt=fmt(d);S.saved=true;save();
-  const name='출하사진_'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'_'+p2(d.getHours())+p2(d.getMinutes())+'_'+S.items.length+'대.xlsx';
+  const name='AZ 사전검사_'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'_'+p2(d.getHours())+p2(d.getMinutes())+'_'+S.items.length+'대.xlsx';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(buildXlsxBlob());a.download=name;
   document.body.appendChild(a);a.click();a.remove();
